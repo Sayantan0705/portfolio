@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Optimus — Case Study | Sayantan Banerjee</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── HERO ── */
+    .case-hero {
+      padding-top: var(--nav-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .case-hero-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 5rem clamp(1.5rem,8vw,8rem) 4rem;
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 2rem; align-items: end;
+    }
+    .case-breadcrumb {
+      font-family: 'Space Mono', monospace; font-size: .62rem;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 2rem;
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .case-breadcrumb a { color: var(--muted); transition: color .2s; }
+    .case-breadcrumb a:hover { color: var(--gold); }
+    .case-breadcrumb span { color: var(--border); }
+    .case-tag-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .case-title {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      line-height: .92; letter-spacing: -.04em;
+      color: var(--cream); margin-bottom: 1rem;
+    }
+    .case-title em { font-family: 'DM Serif Display', serif; font-style: italic; color: var(--gold); }
+    .case-subtitle {
+      font-family: 'DM Serif Display', serif; font-style: italic;
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      color: var(--muted); max-width: 600px;
+    }
+    .case-meta-block { text-align: right; }
+    .case-meta-item { margin-bottom: 1.2rem; }
+    .case-meta-label {
+      font-family: 'Space Mono', monospace; font-size: .6rem;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+    }
+    .case-meta-value {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 1rem; color: var(--cream); margin-top: .2rem;
+    }
+    .hero-grid-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 50px 50px; opacity: .15;
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar { border-bottom: 1px solid var(--border); background: var(--bg); }
+    .stats-bar-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 clamp(1.5rem,8vw,8rem);
+      display: grid; grid-template-columns: repeat(4, 1fr);
+    }
+    .stat-cell {
+      padding: 2.5rem 0;
+      border-right: 1px solid var(--border);
+      padding-right: 2rem; padding-left: 1rem;
+    }
+    .stat-cell:first-child { padding-left: 0; }
+    .stat-cell:last-child { border-right: none; }
+    .stat-big {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      color: var(--gold); line-height: 1;
+    }
+    .stat-desc {
+      font-family: 'Space Mono', monospace; font-size: .62rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); margin-top: .5rem; line-height: 1.5;
+    }
+
+    /* ── SECTION BASE ── */
+    .cs-section {
+      max-width: 1200px; margin: 0 auto;
+      padding: clamp(4rem,10vw,7rem) clamp(1.5rem,8vw,8rem);
+      border-bottom: 1px solid var(--border);
+    }
+    .cs-label {
+      font-family: 'Space Mono', monospace; font-size: .62rem;
+      letter-spacing: .22em; text-transform: uppercase; color: var(--gold);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: .8rem;
+    }
+    .cs-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gold); }
+    .cs-h2 {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 1; letter-spacing: -.03em; color: var(--cream);
+      margin-bottom: 2.5rem;
+    }
+    .cs-h2 em { font-family: 'DM Serif Display', serif; font-style: italic; color: var(--gold); }
+    .cs-body {
+      font-size: 1.05rem; color: var(--muted); line-height: 1.8;
+      max-width: 780px;
+    }
+    .cs-body p { margin-bottom: 1.2rem; }
+    .cs-body strong { color: var(--text); font-weight: 400; }
+    .cs-body p:last-child { margin-bottom: 0; }
+
+    /* ── LAYOUT HELPERS ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+    .two-col-wide { display: grid; grid-template-columns: 1.4fr 1fr; gap: 4rem; align-items: start; }
+
+    /* ── PROBLEM CARDS ── */
+    .problem-cards { display: flex; flex-direction: column; gap: 1px; margin-top: 2rem; }
+    .problem-card { display: grid; grid-template-columns: 80px 1fr; border: 1px solid var(--border); background: var(--surface); overflow: hidden; }
+    .problem-num { display: flex; align-items: center; justify-content: center; background: var(--bg); font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.6rem; color: var(--border); border-right: 1px solid var(--border); }
+    .problem-body { padding: 1.5rem; }
+    .problem-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--cream); margin-bottom: .4rem; }
+    .problem-text { font-size: .9rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── CALLOUT ── */
+    .callout {
+      margin-top: 2.5rem; padding: 2rem;
+      border: 1px solid var(--gold-dim);
+      background: rgba(232,160,32,.04);
+      position: relative; overflow: hidden;
+    }
+    .callout::before {
+      content: '"'; position: absolute; top: -1rem; left: 1.5rem;
+      font-family: 'DM Serif Display', serif; font-size: 8rem;
+      color: var(--gold-dim); opacity: .2; line-height: 1;
+    }
+    .callout p { font-family: 'DM Serif Display', serif; font-style: italic; font-size: clamp(1rem, 2vw, 1.3rem); color: var(--text); line-height: 1.6; position: relative; }
+    .callout cite { display: block; margin-top: .8rem; font-family: 'Space Mono', monospace; font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); font-style: normal; }
+
+    /* ── OPPORTUNITY GRID ── */
+    .opp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
+    .opp-card { padding: 1.5rem; border: 1px solid var(--border); background: var(--surface); transition: border-color .25s; }
+    .opp-card:hover { border-color: var(--gold-dim); }
+    .opp-icon { font-size: 1.5rem; margin-bottom: .8rem; }
+    .opp-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: .95rem; color: var(--cream); margin-bottom: .4rem; }
+    .opp-text { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── PERSONA CARDS ── */
+    .persona-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+    .persona-card { border: 1px solid var(--border); background: var(--surface); overflow: hidden; }
+    .persona-header { padding: 1.5rem; background: var(--bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 1rem; }
+    .persona-avatar { width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, var(--gold-dim), var(--gold)); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem; color: var(--bg); flex-shrink: 0; }
+    .persona-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--cream); }
+    .persona-role { font-family: 'Space Mono', monospace; font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-top: .2rem; }
+    .persona-body { padding: 1.5rem; }
+    .persona-need { font-size: .85rem; color: var(--muted); line-height: 1.65; margin-bottom: .8rem; display: flex; gap: .7rem; }
+    .persona-need::before { content: '→'; color: var(--gold); font-family: 'Space Mono', monospace; font-size: .65rem; flex-shrink: 0; padding-top: .15rem; }
+
+    /* ── PRD TABLE ── */
+    .prd-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+    .prd-table th { font-family: 'Space Mono', monospace; font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); text-align: left; padding: .8rem 1rem; border-bottom: 1px solid var(--border); background: var(--surface); }
+    .prd-table td { padding: 1rem; border-bottom: 1px solid var(--border); font-size: .88rem; color: var(--muted); line-height: 1.6; vertical-align: top; }
+    .prd-table tr:last-child td { border-bottom: none; }
+    .prd-table tr:hover td { background: rgba(232,160,32,.02); }
+    .prd-table td:first-child { color: var(--text); font-family: 'DM Serif Display', serif; font-size: .95rem; min-width: 180px; }
+    .prd-priority { display: inline-block; padding: .2rem .6rem; font-family: 'Space Mono', monospace; font-size: .55rem; letter-spacing: .1em; text-transform: uppercase; border-radius: 2px; }
+    .prd-priority.p0 { background: rgba(232,160,32,.15); color: var(--gold); border: 1px solid var(--gold-dim); }
+    .prd-priority.p1 { background: rgba(255,255,255,.05); color: var(--muted); border: 1px solid var(--border); }
+    .prd-priority.p2 { background: rgba(255,255,255,.03); color: var(--muted); border: 1px solid var(--border); opacity:.7; }
+    .prd-stakeholder { display: inline-block; margin-top: .4rem; font-family: 'Space Mono', monospace; font-size: .58rem; letter-spacing: .08em; color: var(--gold-dim); }
+
+    /* ── GOALS ── */
+    .goals-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 2rem; }
+    .goal-card { padding: 1.8rem; border: 1px solid var(--border); background: var(--surface); text-align: center; transition: border-color .25s, transform .25s; }
+    .goal-card:hover { border-color: var(--gold-dim); transform: translateY(-3px); }
+    .goal-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .goal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: .95rem; color: var(--cream); margin-bottom: .5rem; }
+    .goal-metric { font-family: 'Space Mono', monospace; font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: .5rem; }
+    .goal-text { font-size: .82rem; color: var(--muted); line-height: 1.55; }
+
+    /* ── WORKFLOW ── */
+    .workflow-phase { margin-bottom: 3rem; }
+    .phase-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; }
+    .phase-badge { padding: .3rem .9rem; background: var(--gold); color: var(--bg); font-family: 'Space Mono', monospace; font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; }
+    .phase-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--cream); }
+    .workflow-steps { display: flex; flex-direction: column; gap: 1px; }
+    .workflow-step { display: grid; grid-template-columns: 52px 1fr; border: 1px solid var(--border); background: var(--surface); transition: border-color .2s; }
+    .workflow-step:hover { border-color: var(--gold-dim); }
+    .step-num { display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: .7rem; color: var(--gold); background: var(--bg); border-right: 1px solid var(--border); }
+    .step-body { padding: 1.2rem 1.5rem; }
+    .step-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: .95rem; color: var(--cream); margin-bottom: .3rem; }
+    .step-desc { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+    .step-detail { display: inline-block; margin-top: .5rem; font-family: 'Space Mono', monospace; font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-dim); }
+    .phase-arrow { text-align: center; padding: .8rem 0; color: var(--gold-dim); font-size: 1.2rem; }
+
+    /* ── RUPANTOR EXPLAINER ── */
+    .rupantor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; border: 1px solid var(--border); margin-top: 2rem; background: var(--border); }
+    .rupantor-cell { background: var(--surface); padding: 1.8rem; }
+    .rupantor-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 3rem; color: var(--border); line-height: 1; margin-bottom: .8rem; letter-spacing: -.04em; }
+    .rupantor-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--cream); margin-bottom: .5rem; }
+    .rupantor-text { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── BOX MODEL ── */
+    .box-model-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+    .box-card { padding: 1.8rem; border: 1px solid var(--border); background: var(--surface); }
+    .box-card-label { font-family: 'Space Mono', monospace; font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); margin-bottom: .8rem; }
+    .box-card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--cream); margin-bottom: .8rem; }
+    .box-list { list-style: none; display: flex; flex-direction: column; gap: .5rem; }
+    .box-list li { font-size: .85rem; color: var(--muted); padding-left: 1rem; position: relative; line-height: 1.5; }
+    .box-list li::before { content: '→'; position: absolute; left: 0; color: var(--gold); font-family: 'Space Mono', monospace; font-size: .65rem; }
+
+    /* ── OUTCOMES ── */
+    .outcomes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+    .outcome-card { padding: 2rem; border: 1px solid var(--border); background: var(--surface); display: flex; flex-direction: column; gap: .5rem; transition: border-color .25s, transform .25s; }
+    .outcome-card:hover { border-color: var(--gold-dim); transform: translateY(-3px); }
+    .outcome-big { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(2.5rem, 5vw, 4rem); color: var(--gold); line-height: 1; }
+    .outcome-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--cream); }
+    .outcome-text { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── CASE NAV ── */
+    .case-nav { max-width: 1200px; margin: 0 auto; padding: 3rem clamp(1.5rem,8vw,8rem); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+
+    @media (max-width: 900px) {
+      .two-col, .two-col-wide { grid-template-columns: 1fr; gap: 2rem; }
+      .goals-grid { grid-template-columns: 1fr 1fr; }
+      .rupantor-grid { grid-template-columns: 1fr; }
+      .stats-bar-inner { grid-template-columns: 1fr 1fr; }
+      .stat-cell:nth-child(2) { border-right: none; }
+      .outcomes-grid { grid-template-columns: 1fr; }
+      .opp-grid, .persona-grid, .box-model-grid { grid-template-columns: 1fr; }
+      .case-hero-inner { grid-template-columns: 1fr; }
+      .case-meta-block { text-align: left; }
+    }
+    @media (max-width: 600px) {
+      .goals-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="cursor"><div class="cursor-dot"></div></div>
+<div class="cursor"><div class="cursor-ring"></div></div>
+
+<nav>
+  <div class="nav-logo">SB</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="experience.html">Experience</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="contact.html" class="nav-cta">Let's Talk</a>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">Home</a><a href="about.html">About</a>
+  <a href="experience.html">Experience</a><a href="projects.html">Projects</a>
+  <a href="contact.html">Contact</a>
+</div>
+
+<main>
+
+  <!-- ── HERO ── -->
+  <section class="case-hero">
+    <div class="hero-grid-bg"></div>
+    <div class="case-hero-inner">
+      <div>
+        <div class="case-breadcrumb reveal">
+          <a href="projects.html">Projects</a>
+          <span>/</span>
+          <span style="color:var(--text)">Optimus</span>
+        </div>
+        <div class="case-tag-row reveal">
+          <span class="tag gold">Logistics</span>
+          <span class="tag">Last-Mile Delivery</span>
+          <span class="tag">B2B SaaS</span>
+          <span class="tag gold">Route Optimization</span>
+          <span class="tag">May 2024 – Oct 2025</span>
+        </div>
+        <h1 class="case-title reveal">
+          Barikoi<br><em>Optimus</em>
+        </h1>
+        <p class="case-subtitle reveal">
+          A next-gen Delivery Management System built for F-commerce and corporate clients — cutting delivery costs by 15% and raising customer satisfaction by 35% through intelligent routing, a proprietary area-sorting algorithm, and real-time tracking.
+        </p>
+      </div>
+      <div class="case-meta-block reveal">
+        <div class="case-meta-item">
+          <div class="case-meta-label">My Role</div>
+          <div class="case-meta-value">Product Development Manager</div>
+        </div>
+        <div class="case-meta-item">
+          <div class="case-meta-label">Company</div>
+          <div class="case-meta-value">Barikoi Technologies Ltd.</div>
+        </div>
+        <div class="case-meta-item">
+          <div class="case-meta-label">Industry</div>
+          <div class="case-meta-value">Logistics / F-commerce / Banking</div>
+        </div>
+        <div class="case-meta-item">
+          <div class="case-meta-label">Platform</div>
+          <div class="case-meta-value">Mobile App + Web Dashboard</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STATS BAR ── -->
+  <div class="stats-bar">
+    <div class="stats-bar-inner">
+      <div class="stat-cell reveal">
+        <div class="stat-big">15%</div>
+        <div class="stat-desc">Delivery Cost<br>Reduction</div>
+      </div>
+      <div class="stat-cell reveal">
+        <div class="stat-big">35%</div>
+        <div class="stat-desc">Customer Satisfaction<br>Increase</div>
+      </div>
+      <div class="stat-cell reveal">
+        <div class="stat-big">1</div>
+        <div class="stat-desc">Proprietary Algorithm<br>Rupantor</div>
+      </div>
+      <div class="stat-cell reveal">
+        <div class="stat-big">B2B</div>
+        <div class="stat-desc">Banks + Corporate<br>Clients Served</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BUSINESS CASE ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">Business Case</div>
+    <h2 class="cs-h2 reveal">Last-mile delivery is<br>broken in <em>Bangladesh.</em></h2>
+    <div class="two-col-wide">
+      <div>
+        <div class="cs-body reveal">
+          <p>Bangladesh's e-commerce and F-commerce sector has grown explosively — but the logistics infrastructure supporting it has barely kept pace. Merchants selling on Facebook, Daraz, or their own storefronts depend entirely on third-party courier networks that are <strong>opaque, slow, and expensive</strong>. For banks and corporate clients dispatching field documentation, the pain is even sharper: no tracking, no proof of delivery, and no recourse when things go wrong.</p>
+          <p>The core tension is this: delivery companies in Bangladesh operate with <strong>manual order sorting</strong>, gut-feel routing, and no real-time visibility — meaning riders waste fuel criss-crossing the same neighbourhoods, customers wait with no ETA, and merchants absorb the cost of failed deliveries through returned COD orders that never convert.</p>
+          <p>For <strong>F-commerce merchants</strong> — the fastest-growing seller segment — cash-on-delivery is the dominant payment model, making every failed or delayed delivery a direct revenue loss. For <strong>banks and corporate clients</strong>, delayed document delivery compounds operational SLA breaches and customer dissatisfaction at scale. Optimus was built to fix both.</p>
+        </div>
+        <div class="callout reveal">
+          <p>Most delivery businesses treat routing as an afterthought — riders plan their own routes intuitively. The result is <strong>duplicated coverage, wasted kilometres, and delivery windows that slip by hours</strong>. The opportunity was to bring the same geographic intelligence Barikoi applied to CPV verification into the last-mile logistics stack.</p>
+          <cite>— Optimus Product Discovery, 2024</cite>
+        </div>
+      </div>
+
+      <div>
+        <div class="problem-cards reveal">
+          <div class="problem-card">
+            <div class="problem-num">01</div>
+            <div class="problem-body">
+              <div class="problem-title">Manual, Inefficient Order Sorting</div>
+              <div class="problem-text">Dispatchers manually assigned orders to riders based on memory and habit — no geographic logic, no load balancing, no priority handling. Peak-hour backlogs were routine.</div>
+            </div>
+          </div>
+          <div class="problem-card">
+            <div class="problem-num">02</div>
+            <div class="problem-body">
+              <div class="problem-title">Zero Route Intelligence</div>
+              <div class="problem-text">Riders planned their own routes, often backtracking across the same areas. No traffic data, no multi-stop optimization, no eco-routing — just guesswork burning fuel and time.</div>
+            </div>
+          </div>
+          <div class="problem-card">
+            <div class="problem-num">03</div>
+            <div class="problem-body">
+              <div class="problem-title">No Customer Visibility</div>
+              <div class="problem-text">Customers had no live tracking, no ETA, and no way to confirm delivery. Trust in online merchants depended on delivery experience — and it was consistently poor.</div>
+            </div>
+          </div>
+          <div class="problem-card">
+            <div class="problem-num">04</div>
+            <div class="problem-body">
+              <div class="problem-title">Fraud &amp; Disputed Deliveries</div>
+              <div class="problem-text">Without proof-of-delivery — no photo, no signature, no GPS timestamp — merchants and banks had no recourse against fraudulent non-delivery claims from either riders or customers.</div>
+            </div>
+          </div>
+          <div class="problem-card">
+            <div class="problem-num">05</div>
+            <div class="problem-body">
+              <div class="problem-title">Siloed Financial Visibility</div>
+              <div class="problem-text">Revenue, COD collections, expenses, and rider performance were tracked in spreadsheets. Finance teams had no real-time view of delivery economics or profitability by zone.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── USERS ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">User Research</div>
+    <h2 class="cs-h2 reveal">Three types of users,<br>one <em>broken experience.</em></h2>
+    <div class="cs-body reveal">
+      <p>Delivery management systems serve a triangle of stakeholders — each with distinct goals that are often in tension. Getting the product right meant understanding all three simultaneously and designing features that served each without compromising the others.</p>
+    </div>
+    <div class="persona-grid reveal">
+      <div class="persona-card">
+        <div class="persona-header">
+          <div class="persona-avatar">M</div>
+          <div>
+            <div class="persona-name">The Merchant</div>
+            <div class="persona-role">F-commerce Seller / Business Owner</div>
+          </div>
+        </div>
+        <div class="persona-body">
+          <div class="persona-need">Needs COD collection to be fast and reconciled daily — every delayed return is frozen working capital.</div>
+          <div class="persona-need">Wants visibility into which orders are delivered, failed, or in transit — without calling the courier company.</div>
+          <div class="persona-need">Needs delivery charges to be transparent and predictable — surprise costs erode margins on thin F-commerce economics.</div>
+          <div class="persona-need">Wants proof of delivery so disputed orders don't default in the customer's favour.</div>
+        </div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-header">
+          <div class="persona-avatar">R</div>
+          <div>
+            <div class="persona-name">The Rider</div>
+            <div class="persona-role">Delivery Agent / Field Staff</div>
+          </div>
+        </div>
+        <div class="persona-body">
+          <div class="persona-need">Needs a clear, ordered trip list — too many manual decisions per shift leads to missed deliveries and complaints.</div>
+          <div class="persona-need">Wants an optimized route so they can complete more deliveries per day and earn more per shift.</div>
+          <div class="persona-need">Needs simple proof-of-delivery capture — quick photo + status update, not a complex multi-step form.</div>
+          <div class="persona-need">Wants earnings and COD collection to be transparently tracked so disputes are easily resolved.</div>
+        </div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-header">
+          <div class="persona-avatar">O</div>
+          <div>
+            <div class="persona-name">The Operations Manager</div>
+            <div class="persona-role">Dispatch / In-Charge</div>
+          </div>
+        </div>
+        <div class="persona-body">
+          <div class="persona-need">Needs to assign and monitor hundreds of orders per day without manual coordination overhead.</div>
+          <div class="persona-need">Wants real-time visibility into every rider's location and progress to proactively manage SLA risk.</div>
+          <div class="persona-need">Needs fraud controls — geo-fences, status locks, signature capture — to prevent false delivery claims.</div>
+          <div class="persona-need">Wants performance analytics by rider, zone, and time period to optimize staffing and coverage.</div>
+        </div>
+      </div>
+      <div class="persona-card">
+        <div class="persona-header">
+          <div class="persona-avatar">C</div>
+          <div>
+            <div class="persona-name">The Customer</div>
+            <div class="persona-role">End Recipient</div>
+          </div>
+        </div>
+        <div class="persona-body">
+          <div class="persona-need">Wants to know exactly when their parcel will arrive — without calling the merchant or courier helpline.</div>
+          <div class="persona-need">Needs a live tracking link so they can be home or redirect delivery if plans change.</div>
+          <div class="persona-need">Wants ETA notifications that are actually accurate — vague "arriving today" messages erode trust.</div>
+          <div class="persona-need">Expects a simple way to confirm receipt and provide feedback on the delivery experience.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── OPPORTUNITY ── */-->
+  <section class="cs-section">
+    <div class="cs-label reveal">Market Opportunity</div>
+    <h2 class="cs-h2 reveal">Why Barikoi was uniquely<br>positioned to <em>win this.</em></h2>
+    <div class="opp-grid reveal">
+      <div class="opp-card">
+        <div class="opp-icon">🗺️</div>
+        <div class="opp-title">Proprietary Map Intelligence</div>
+        <div class="opp-text">Barikoi's address geocoding and geographic segmentation — already proven in Verify — could power route optimization and area-based order sorting that no generic logistics SaaS could match in Bangladesh.</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">📦</div>
+        <div class="opp-title">Exploding F-commerce Volume</div>
+        <div class="opp-text">Facebook commerce in Bangladesh grew massively post-2020. Hundreds of thousands of small merchants needed delivery infrastructure but couldn't afford enterprise logistics platforms.</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">🏦</div>
+        <div class="opp-title">Existing Banking Relationships</div>
+        <div class="opp-text">Verify had already established Barikoi as a trusted technology partner inside Bangladesh's top banks. Optimus could expand the relationship into a new operational category — document and parcel delivery — without starting from zero.</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">🔗</div>
+        <div class="opp-title">API-First Architecture Gap</div>
+        <div class="opp-text">Incumbent delivery platforms in Bangladesh offered no meaningful API integration. Merchants using e-commerce platforms, ERPs, or custom storefronts had to manage delivery manually — a clear product gap to exploit.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRD ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">Product Requirements Document</div>
+    <h2 class="cs-h2 reveal">What Optimus<br>was built to <em>do.</em></h2>
+
+    <div class="cs-body reveal" style="margin-bottom:2rem">
+      <p>Optimus was scoped across three product goals, each anchored to a measurable North Star Metric tracked weekly by the product team.</p>
+    </div>
+
+    <div class="goals-grid">
+      <div class="goal-card reveal">
+        <div class="goal-icon">💸</div>
+        <div class="goal-title">Cost Efficiency</div>
+        <div class="goal-metric">North Star: Cost per Delivery</div>
+        <div class="goal-text">Reduce per-delivery operating cost through smarter routing, fewer failed attempts, and reduced fuel consumption via the Box Model.</div>
+      </div>
+      <div class="goal-card reveal">
+        <div class="goal-icon">😊</div>
+        <div class="goal-title">Customer Satisfaction</div>
+        <div class="goal-metric">North Star: CSAT Score</div>
+        <div class="goal-text">Raise satisfaction for both merchants and end-customers through real-time tracking, accurate ETAs, and irrefutable proof-of-delivery.</div>
+      </div>
+      <div class="goal-card reveal">
+        <div class="goal-icon">⚡</div>
+        <div class="goal-title">Operational Throughput</div>
+        <div class="goal-metric">North Star: Deliveries / Rider / Day</div>
+        <div class="goal-text">Maximize orders completed per rider shift through intelligent area-based assignment and route optimization — without adding headcount.</div>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top:3rem">
+      <p class="cs-label" style="margin-bottom:1.5rem">Feature Roadmap</p>
+      <table class="prd-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>User Story</th>
+            <th>Acceptance Criteria</th>
+            <th>Priority</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Order Management<br><span class="prd-stakeholder">Merchants · Support Teams</span></td>
+            <td>As a merchant, I can create, edit, duplicate, and track all my delivery orders from a single dashboard without calling the courier.</td>
+            <td>CRUD operations on orders; duplicate last order in 1 click; order history searchable by date, customer, or status; bulk upload via CSV.</td>
+            <td><span class="prd-priority p0">P0 Core</span></td>
+          </tr>
+          <tr>
+            <td>Rupantor Auto-Dispatch<br><span class="prd-stakeholder">Operations Managers · Dispatch Teams</span></td>
+            <td>As a dispatcher, orders are automatically sorted and assigned to the nearest available rider by area — without manual intervention.</td>
+            <td>Area-selection priority queue assigns orders within 60s of creation; considers rider load and geo-zone; manual override available for exceptions.</td>
+            <td><span class="prd-priority p0">P0 Core</span></td>
+          </tr>
+          <tr>
+            <td>Route Optimization<br><span class="prd-stakeholder">Delivery Riders · Operations Managers</span></td>
+            <td>As a rider, I receive an optimized multi-stop route at the start of my shift so I can complete maximum deliveries with minimum travel.</td>
+            <td>Route accounts for real-time traffic; multi-stop ordering minimizes total distance; rider can modify route; planned vs. actual route comparison available.</td>
+            <td><span class="prd-priority p0">P0 Core</span></td>
+          </tr>
+          <tr>
+            <td>Real-Time Tracking<br><span class="prd-stakeholder">Merchants · Customers · Support</span></td>
+            <td>As a customer, I receive a live tracking link so I can see exactly where my parcel is and when it will arrive — without contacting the merchant.</td>
+            <td>Live location pings every 30s; ETA auto-updated based on traffic; interactive map for customer; geolocation alerts when rider is 500m away.</td>
+            <td><span class="prd-priority p0">P0 Core</span></td>
+          </tr>
+          <tr>
+            <td>Proof of Delivery<br><span class="prd-stakeholder">Riders · Merchants · Customers</span></td>
+            <td>As a merchant, every delivery is confirmed with geotagged photos, digital signature, and a timestamp — so disputed deliveries are resolved instantly.</td>
+            <td>Status update only unlocks within 100m of delivery address; photo mandatory (in-app camera only); signature capture optional; barcode scan for additional confirmation; delivery timestamp auto-recorded.</td>
+            <td><span class="prd-priority p0">P0 Core</span></td>
+          </tr>
+          <tr>
+            <td>Fraud Detection<br><span class="prd-stakeholder">Risk · Security Teams</span></td>
+            <td>As an operations manager, the system automatically flags suspicious order patterns, payment anomalies, and address inconsistencies before they become losses.</td>
+            <td>Order frequency anomaly detection; payment method cross-check; address verification against known data; customizable fraud rules by merchant; user behaviour monitoring dashboard.</td>
+            <td><span class="prd-priority p0">P0 Core</span></td>
+          </tr>
+          <tr>
+            <td>Financial Analytics<br><span class="prd-stakeholder">Finance Teams · Executives</span></td>
+            <td>As a finance manager, I can see revenue, COD collection, profit margins, and expenses per zone and per rider — in real time, not at month end.</td>
+            <td>Per-order revenue tracking; profit margin by delivery zone; expense categorization; COD reconciliation dashboard; rider earnings breakdown; predictive revenue modelling using 90-day history.</td>
+            <td><span class="prd-priority p1">P1 Growth</span></td>
+          </tr>
+          <tr>
+            <td>Role-Based Access Control<br><span class="prd-stakeholder">Admins · In-Charges · Riders</span></td>
+            <td>As an admin, I can define exactly what each role (Admin, In-charge, Rider) sees and can do — preventing unauthorized data access or action.</td>
+            <td>Three distinct permission tiers enforced at API level; Rider cannot view other riders' earnings; In-charge cannot modify fraud rules; audit log for all permission changes.</td>
+            <td><span class="prd-priority p1">P1 Growth</span></td>
+          </tr>
+          <tr>
+            <td>API Integration Layer<br><span class="prd-stakeholder">IT Teams · Developers · Integrators</span></td>
+            <td>As a developer, I can connect my merchant's e-commerce platform or ERP to Optimus via API so orders flow in automatically without manual re-entry.</td>
+            <td>REST API for order placement, status updates, and reporting; webhook support for real-time events; OAuth2 authentication; rate limiting and sandbox environment for testing.</td>
+            <td><span class="prd-priority p1">P1 Growth</span></td>
+          </tr>
+          <tr>
+            <td>Customer Feedback Module<br><span class="prd-stakeholder">Customers · Merchants</span></td>
+            <td>As a merchant, I receive structured post-delivery feedback from my customers so I can track delivery quality and identify problem routes or riders.</td>
+            <td>One-tap rating on delivery confirmation screen; optional comment; feedback aggregated per rider and per zone; merchant dashboard shows NPS trend over time.</td>
+            <td><span class="prd-priority p2">P2 Horizon</span></td>
+          </tr>
+          <tr>
+            <td>Eco-Route Mode<br><span class="prd-stakeholder">Operations · Sustainability</span></td>
+            <td>As an operations manager, I can switch to eco-routing mode that prioritises lower-emission routes to reduce our fleet's carbon footprint.</td>
+            <td>Eco-route option available alongside standard optimized route; estimated fuel saving shown; route comparison (standard vs. eco) available per shift.</td>
+            <td><span class="prd-priority p2">P2 Horizon</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── RUPANTOR ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">Proprietary Innovation</div>
+    <h2 class="cs-h2 reveal">Rupantor — the algorithm<br>we <em>built from scratch.</em></h2>
+    <div class="cs-body reveal">
+      <p>The centrepiece of Optimus is <strong>Rupantor</strong> — a proprietary area-selection priority queue algorithm developed by the Barikoi engineering team. Named after the Bengali word for "transformer," Rupantor solves the fundamental inefficiency of delivery dispatch: assigning the right order to the right rider at the right time, based on geography rather than availability alone.</p>
+      <p>Standard delivery systems assign orders first-come-first-served or by manual dispatcher judgment. Rupantor instead <strong>segments all pending orders into geographic clusters</strong>, scores each cluster by urgency and density, and assigns them to riders whose current position and remaining capacity makes them the optimal match — minimizing total distance travelled across the entire fleet simultaneously, not just for individual orders.</p>
+    </div>
+    <div class="rupantor-grid reveal">
+      <div class="rupantor-cell">
+        <div class="rupantor-num">01</div>
+        <div class="rupantor-title">Geographic Clustering</div>
+        <div class="rupantor-text">All pending orders are clustered into delivery zones using Barikoi's proprietary address segmentation. Orders within the same cluster are batched together — ensuring a rider never criss-crosses the city for adjacent deliveries.</div>
+      </div>
+      <div class="rupantor-cell">
+        <div class="rupantor-num">02</div>
+        <div class="rupantor-title">Priority Scoring</div>
+        <div class="rupantor-text">Each cluster is scored by a weighted combination of order age (time since creation), delivery SLA urgency, cluster density (number of orders per km²), and merchant priority tier. The highest-scoring cluster gets dispatched first.</div>
+      </div>
+      <div class="rupantor-cell">
+        <div class="rupantor-num">03</div>
+        <div class="rupantor-title">Optimal Rider Matching</div>
+        <div class="rupantor-text">Rupantor matches each cluster to the rider whose current GPS position, remaining carrying capacity, and shift time remaining makes them the lowest-cost executor — minimising total fleet distance, not just individual trip distance.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BOX MODEL ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">Cost Reduction Strategy</div>
+    <h2 class="cs-h2 reveal">The Box Model that cut<br>costs by <em>15%.</em></h2>
+    <div class="cs-body reveal" style="margin-bottom:2rem">
+      <p>Beyond intelligent routing, Optimus introduced a structural change to how deliveries are physically organized — the <strong>Box Model</strong>. Instead of riders carrying a mixed bag of orders sorted loosely by memory, each rider's load is pre-sorted into physical delivery zones before the shift begins, matching Rupantor's digital clustering with a physical analogue.</p>
+    </div>
+    <div class="box-model-grid reveal">
+      <div class="box-card">
+        <div class="box-card-label">Before — Traditional Model</div>
+        <div class="box-card-title">Mixed Load, Reactive Routing</div>
+        <ul class="box-list">
+          <li>Orders loaded in arrival order, no geographic sorting</li>
+          <li>Rider plans route mentally at start of shift</li>
+          <li>Backtracking common — same area visited 2–3× per shift</li>
+          <li>Failed delivery attempts not rescheduled intelligently</li>
+          <li>Fuel costs unpredictable, no per-route visibility</li>
+        </ul>
+      </div>
+      <div class="box-card">
+        <div class="box-card-label">After — Box Model</div>
+        <div class="box-card-title">Zone-Sorted Load, Optimized Route</div>
+        <ul class="box-list">
+          <li>Orders pre-sorted into zone boxes before shift starts</li>
+          <li>Rupantor generates optimized route matching the sorted load</li>
+          <li>Each zone completed in one pass — zero backtracking</li>
+          <li>Failed attempts auto-rescheduled to the next same-zone shift</li>
+          <li>Per-shift fuel cost tracked and compared against baseline</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WORKFLOW ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">System Design</div>
+    <h2 class="cs-h2 reveal">How Optimus<br><em>actually works.</em></h2>
+    <div class="cs-body reveal" style="margin-bottom:2.5rem">
+      <p>Optimus runs across three layers simultaneously — the <strong>merchant-facing web dashboard</strong> for order management and analytics, the <strong>rider mobile app</strong> for trip execution and proof-of-delivery, and the <strong>operations dashboard</strong> for dispatch, monitoring, and financial reconciliation.</p>
+    </div>
+
+    <div class="workflow-wrap">
+
+      <!-- Phase 1 -->
+      <div class="workflow-phase">
+        <div class="phase-header">
+          <span class="phase-badge">Phase 1</span>
+          <span class="phase-title">Merchant — Order Creation</span>
+        </div>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <div class="step-num">1.1</div>
+            <div class="step-body">
+              <div class="step-title">Order Entry</div>
+              <div class="step-desc">Merchant creates a delivery order via the web dashboard or API integration — entering customer name, delivery address, parcel details, COD amount (if applicable), and any special instructions. Bulk upload via CSV supported for high-volume merchants.</div>
+              <span class="step-detail">Actor: Merchant · Platform: Web Dashboard or API · Trigger: Order creation → Geocoding</span>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">1.2</div>
+            <div class="step-body">
+              <div class="step-title">Address Geocoding &amp; Fraud Pre-Check</div>
+              <div class="step-desc">The system immediately geocodes the delivery address using Barikoi Maps and cross-checks it against the fraud detection engine — flagging anomalous addresses, suspicious order frequency, or payment method irregularities before the order is accepted into the dispatch queue.</div>
+              <span class="step-detail">Actor: System · Technology: Barikoi Maps API + Fraud Engine · Output: Verified order in dispatch queue</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-arrow">↓</div>
+
+      <!-- Phase 2 -->
+      <div class="workflow-phase">
+        <div class="phase-header">
+          <span class="phase-badge">Phase 2</span>
+          <span class="phase-title">System — Rupantor Dispatch</span>
+        </div>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <div class="step-num">2.1</div>
+            <div class="step-body">
+              <div class="step-title">Area Clustering &amp; Priority Scoring</div>
+              <div class="step-desc">Rupantor groups all pending orders into geographic clusters and scores each cluster by urgency, density, and SLA status. High-priority clusters (time-sensitive, high-density, or premium merchant tier) are elevated in the dispatch queue.</div>
+              <span class="step-detail">Actor: System · Algorithm: Rupantor Priority Queue · Inputs: Order age, GPS coordinates, cluster density, merchant tier</span>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">2.2</div>
+            <div class="step-body">
+              <div class="step-title">Rider Matching &amp; Load Assignment</div>
+              <div class="step-desc">Rupantor identifies the optimal rider for each cluster based on current GPS position, remaining carrying capacity, and shift time remaining. The matched rider receives a push notification with their assigned cluster — pre-sorted into the Box Model zone order.</div>
+              <span class="step-detail">Actor: System → Rider · Output: Zone-sorted trip list + pre-optimized route pushed to rider app</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-arrow">↓</div>
+
+      <!-- Phase 3 -->
+      <div class="workflow-phase">
+        <div class="phase-header">
+          <span class="phase-badge">Phase 3</span>
+          <span class="phase-title">Rider — Trip Execution</span>
+        </div>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <div class="step-num">3.1</div>
+            <div class="step-body">
+              <div class="step-title">Accept Assignment &amp; Review Route</div>
+              <div class="step-desc">Rider opens the mobile app, reviews the assigned cluster of orders plotted on the map with the optimized route overlaid, and accepts the shift. All orders are pre-sorted in delivery sequence — no manual planning needed.</div>
+              <span class="step-detail">Actor: Rider · Platform: iOS / Android App</span>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">3.2</div>
+            <div class="step-body">
+              <div class="step-title">Navigate with Live Traffic</div>
+              <div class="step-desc">Rider follows the Optimus-generated route with live traffic data integrated. If a road is blocked or conditions change, the route auto-recalculates and the customer's ETA is updated in real time — triggering a push notification to the customer when the rider is 500m away.</div>
+              <span class="step-detail">Actor: Rider + Customer · Technology: Barikoi Maps + Live Traffic API</span>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">3.3</div>
+            <div class="step-body">
+              <div class="step-title">Proof of Delivery Capture</div>
+              <div class="step-desc">At each delivery point, the rider's delivery status button only unlocks when GPS confirms they are within 100 metres of the address. Rider photographs the delivered parcel (in-app camera only — no gallery uploads), captures digital signature if required, and scans barcode for additional confirmation. All evidence is geo-stamped and timestamped automatically.</div>
+              <span class="step-detail">Actor: Rider · Fraud Control: Status lock until within 100m · Evidence: Photo + GPS + Timestamp + Optional Signature</span>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">3.4</div>
+            <div class="step-body">
+              <div class="step-title">COD Collection &amp; Reconciliation</div>
+              <div class="step-desc">For cash-on-delivery orders, the rider records the collected amount in-app at the point of handover. The system cross-checks this against the order value and flags any discrepancy immediately to the operations dashboard. End-of-shift COD reconciliation is automated.</div>
+              <span class="step-detail">Actor: Rider · Finance Control: Real-time COD discrepancy alert to Operations Dashboard</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-arrow">↓</div>
+
+      <!-- Phase 4 -->
+      <div class="workflow-phase">
+        <div class="phase-header">
+          <span class="phase-badge">Phase 4</span>
+          <span class="phase-title">Operations — Monitoring &amp; QA</span>
+        </div>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <div class="step-num">4.1</div>
+            <div class="step-body">
+              <div class="step-title">Live Fleet Visibility</div>
+              <div class="step-desc">Operations dashboard shows every active rider's real-time GPS position, current order status, and remaining trip count. Geo-fence alerts trigger if a rider marks a delivery complete while outside the target address zone. In-charges can reassign orders between riders in real time if a rider goes offline or hits capacity.</div>
+              <span class="step-detail">Actor: Operations Manager / In-Charge · Feature: Live map + Geo-fence enforcement + Manual reassignment</span>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">4.2</div>
+            <div class="step-body">
+              <div class="step-title">Performance &amp; Financial Analytics</div>
+              <div class="step-desc">The analytics dashboard tracks deliveries per rider per day, delivery success rate by zone, average cost per delivery versus target, COD collection efficiency, and merchant satisfaction scores. Finance teams access profit margin by zone and expense breakdowns — all updated in real time, not batch-processed overnight.</div>
+              <span class="step-detail">Actor: Operations Manager / Finance Team · Metrics: Deliveries/rider/day · Cost per delivery · Zone margin · COD reconciliation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-arrow">↓</div>
+
+      <!-- Phase 5 -->
+      <div class="workflow-phase">
+        <div class="phase-header">
+          <span class="phase-badge">Phase 5</span>
+          <span class="phase-title">Merchant — Confirmation &amp; Reporting</span>
+        </div>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <div class="step-num">5.1</div>
+            <div class="step-body">
+              <div class="step-title">Delivery Confirmation &amp; Customer Feedback</div>
+              <div class="step-desc">Once a delivery is marked complete, the merchant dashboard updates in real time — showing proof-of-delivery photos, GPS confirmation, and timestamp. The customer receives a delivery confirmation with a one-tap feedback prompt. Feedback aggregates into the merchant's delivery quality score.</div>
+              <span class="step-detail">Actor: Merchant + Customer · Output: Proof-of-delivery record + Customer feedback score</span>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">5.2</div>
+            <div class="step-body">
+              <div class="step-title">Revenue Reconciliation &amp; Reporting</div>
+              <div class="step-desc">End-of-day reports are automatically generated for merchants — showing total deliveries, failed attempts, COD collected vs. outstanding, and charges due. Finance teams receive a parallel P&amp;L summary by delivery zone with comparison against prior periods.</div>
+              <span class="step-detail">Actor: Merchant + Finance Team · Output: Auto-generated daily delivery + financial report</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── OUTCOMES ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">Results &amp; Impact</div>
+    <h2 class="cs-h2 reveal">Numbers that<br><em>proved the model.</em></h2>
+    <div class="outcomes-grid">
+      <div class="outcome-card reveal">
+        <div class="outcome-big">15%</div>
+        <div class="outcome-title">Delivery Cost Reduction</div>
+        <div class="outcome-text">The Box Model combined with Rupantor's geo-clustering reduced total fleet distance per shift — directly cutting fuel, rider time, and failed-attempt costs by 15% against the pre-Optimus baseline.</div>
+      </div>
+      <div class="outcome-card reveal">
+        <div class="outcome-big">35%</div>
+        <div class="outcome-title">Customer Satisfaction Increase</div>
+        <div class="outcome-text">Live tracking, accurate ETAs, and instant proof-of-delivery raised CSAT scores by 35% among bank and corporate clients — the two segments most sensitive to delivery transparency and accountability.</div>
+      </div>
+      <div class="outcome-card reveal">
+        <div class="outcome-big">0</div>
+        <div class="outcome-title">Fraudulent Delivery Claims</div>
+        <div class="outcome-text">The 100m geo-lock on delivery status updates, combined with mandatory in-app photography, eliminated fraudulent delivery claims entirely in the monitored period — a metric both merchants and banks tracked closely.</div>
+      </div>
+      <div class="outcome-card reveal">
+        <div class="outcome-big">3</div>
+        <div class="outcome-title">User Personas Served Simultaneously</div>
+        <div class="outcome-text">Optimus served merchants, riders, operations managers, and end-customers from a single platform — with role-based access ensuring each user saw only what they needed, reducing support overhead significantly.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LEARNINGS ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">PM Reflection</div>
+    <h2 class="cs-h2 reveal">What I learned<br>building <em>Optimus.</em></h2>
+    <div class="two-col">
+      <div class="cs-body reveal">
+        <p><strong>Serving multiple personas in one product is the hardest design problem.</strong> A feature that delights the merchant (mandatory delivery photos) can frustrate the rider (extra steps at the door). Every trade-off had to be adjudicated explicitly — not left to engineering to decide. I ran separate feedback sessions with each persona before every major release.</p>
+        <p><strong>The proprietary algorithm was our real moat, not the features.</strong> Any logistics SaaS can offer order management and tracking. Rupantor — built on Barikoi's unique address data and geographic segmentation — was something no competitor could copy quickly. I pushed hard to prioritize it as the core differentiator, not just one feature among many.</p>
+      </div>
+      <div class="cs-body reveal">
+        <p><strong>COD reconciliation is the number one merchant pain point — everywhere.</strong> I initially underestimated how central cash-on-delivery was to the Bangladeshi F-commerce economy. Once we built real-time COD tracking and end-of-day auto-reconciliation, merchant retention jumped immediately. Always follow the money flow in your users' businesses.</p>
+        <p><strong>Physical and digital systems must be designed together.</strong> The Box Model isn't a software feature — it's a change to how riders physically load their bikes before a shift. Getting operations managers to adopt it required training, change management, and a two-week parallel-running period. Product work doesn't stop at the app.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+  <div class="case-nav">
+    <a href="projects.html" class="btn btn-outline">← All Projects</a>
+    <!-- <a href="verify.html" class="btn btn-outline">View Verify Case Study</a> -->
+    <a href="contact.html" class="btn btn-primary">Discuss This Work →</a>
+  </div>
+
+</main>
+
+<footer>
+  <p>© 2025 Sayantan Banerjee. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="mailto:sayantan420.sb@gmail.com">Email</a>
+    <a href="projects.html">Projects</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
