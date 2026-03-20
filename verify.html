@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify — Case Study | Sayantan Banerjee</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* ── PAGE HERO ── */
+    .case-hero {
+      padding-top: var(--nav-h);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: relative; overflow: hidden;
+    }
+    .case-hero-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 5rem clamp(1.5rem,8vw,8rem) 4rem;
+      display: grid; grid-template-columns: 1fr auto;
+      gap: 2rem; align-items: end;
+    }
+    .case-breadcrumb {
+      font-family: 'Space Mono', monospace; font-size: .62rem;
+      letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 2rem;
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .case-breadcrumb a { color: var(--muted); transition: color .2s; }
+    .case-breadcrumb a:hover { color: var(--gold); }
+    .case-breadcrumb span { color: var(--border); }
+    .case-tag-row { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .case-title {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(3rem, 8vw, 6.5rem);
+      line-height: .92; letter-spacing: -.04em;
+      color: var(--cream); margin-bottom: 1rem;
+    }
+    .case-title em { font-family: 'DM Serif Display', serif; font-style: italic; color: var(--gold); }
+    .case-subtitle {
+      font-family: 'DM Serif Display', serif; font-style: italic;
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      color: var(--muted); max-width: 600px;
+    }
+    .case-meta-block { text-align: right; }
+    .case-meta-item { margin-bottom: 1.2rem; }
+    .case-meta-label {
+      font-family: 'Space Mono', monospace; font-size: .6rem;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+    }
+    .case-meta-value {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 1rem; color: var(--cream); margin-top: .2rem;
+    }
+    .hero-grid-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 50px 50px; opacity: .15;
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      border-bottom: 1px solid var(--border);
+      background: var(--bg);
+    }
+    .stats-bar-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 clamp(1.5rem,8vw,8rem);
+      display: grid; grid-template-columns: repeat(4, 1fr);
+    }
+    .stat-cell {
+      padding: 2.5rem 0;
+      border-right: 1px solid var(--border);
+      padding-right: 2rem; padding-left: 1rem;
+    }
+    .stat-cell:first-child { padding-left: 0; }
+    .stat-cell:last-child { border-right: none; }
+    .stat-big {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      color: var(--gold); line-height: 1;
+    }
+    .stat-desc {
+      font-family: 'Space Mono', monospace; font-size: .62rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); margin-top: .5rem; line-height: 1.5;
+    }
+
+    /* ── SECTION ── */
+    .cs-section {
+      max-width: 1200px; margin: 0 auto;
+      padding: clamp(4rem,10vw,7rem) clamp(1.5rem,8vw,8rem);
+      border-bottom: 1px solid var(--border);
+    }
+    .cs-section:last-of-type { border-bottom: none; }
+    .cs-label {
+      font-family: 'Space Mono', monospace; font-size: .62rem;
+      letter-spacing: .22em; text-transform: uppercase; color: var(--gold);
+      margin-bottom: 1rem; display: flex; align-items: center; gap: .8rem;
+    }
+    .cs-label::before { content: ''; display: block; width: 24px; height: 1px; background: var(--gold); }
+    .cs-h2 {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 1; letter-spacing: -.03em; color: var(--cream);
+      margin-bottom: 2.5rem;
+    }
+    .cs-h2 em { font-family: 'DM Serif Display', serif; font-style: italic; color: var(--gold); }
+    .cs-body {
+      font-size: 1.05rem; color: var(--muted); line-height: 1.8;
+      max-width: 780px;
+    }
+    .cs-body p { margin-bottom: 1.2rem; }
+    .cs-body strong { color: var(--text); font-weight: 400; }
+    .cs-body p:last-child { margin-bottom: 0; }
+
+    /* ── TWO COL ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+    .two-col-wide { display: grid; grid-template-columns: 1.4fr 1fr; gap: 4rem; align-items: start; }
+
+    /* ── PROBLEM CARDS ── */
+    .problem-cards { display: flex; flex-direction: column; gap: 1px; margin-top: 2rem; }
+    .problem-card {
+      display: grid; grid-template-columns: 80px 1fr;
+      border: 1px solid var(--border); background: var(--surface); overflow: hidden;
+    }
+    .problem-num {
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg);
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 1.6rem; color: var(--border);
+      border-right: 1px solid var(--border);
+    }
+    .problem-body { padding: 1.5rem; }
+    .problem-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 1rem; color: var(--cream); margin-bottom: .4rem;
+    }
+    .problem-text { font-size: .9rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── GDP CALLOUT ── */
+    .gdp-callout {
+      margin-top: 2.5rem; padding: 2rem;
+      border: 1px solid var(--gold-dim);
+      background: rgba(232,160,32,.04);
+      position: relative; overflow: hidden;
+    }
+    .gdp-callout::before {
+      content: '"'; position: absolute; top: -1rem; left: 1.5rem;
+      font-family: 'DM Serif Display', serif; font-size: 8rem;
+      color: var(--gold-dim); opacity: .2; line-height: 1;
+    }
+    .gdp-callout p {
+      font-family: 'DM Serif Display', serif; font-style: italic;
+      font-size: clamp(1rem, 2vw, 1.3rem); color: var(--text);
+      line-height: 1.6; position: relative;
+    }
+    .gdp-callout cite {
+      display: block; margin-top: .8rem;
+      font-family: 'Space Mono', monospace; font-size: .6rem;
+      letter-spacing: .1em; text-transform: uppercase; color: var(--gold);
+      font-style: normal;
+    }
+
+    /* ── OPPORTUNITY GRID ── */
+    .opp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
+    .opp-card {
+      padding: 1.5rem; border: 1px solid var(--border); background: var(--surface);
+      transition: border-color .25s;
+    }
+    .opp-card:hover { border-color: var(--gold-dim); }
+    .opp-icon { font-size: 1.5rem; margin-bottom: .8rem; }
+    .opp-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: .95rem; color: var(--cream); margin-bottom: .4rem;
+    }
+    .opp-text { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── PRD TABLE ── */
+    .prd-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+    .prd-table th {
+      font-family: 'Space Mono', monospace; font-size: .62rem;
+      letter-spacing: .12em; text-transform: uppercase; color: var(--gold);
+      text-align: left; padding: .8rem 1rem; border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .prd-table td {
+      padding: 1rem; border-bottom: 1px solid var(--border);
+      font-size: .9rem; color: var(--muted); line-height: 1.6;
+      vertical-align: top;
+    }
+    .prd-table tr:last-child td { border-bottom: none; }
+    .prd-table tr:hover td { background: rgba(232,160,32,.02); }
+    .prd-table td:first-child { color: var(--text); font-family: 'DM Serif Display', serif; font-size: .95rem; }
+    .prd-priority {
+      display: inline-block; padding: .2rem .6rem;
+      font-family: 'Space Mono', monospace; font-size: .55rem;
+      letter-spacing: .1em; text-transform: uppercase; border-radius: 2px;
+    }
+    .prd-priority.p0 { background: rgba(232,160,32,.15); color: var(--gold); border: 1px solid var(--gold-dim); }
+    .prd-priority.p1 { background: rgba(255,255,255,.05); color: var(--muted); border: 1px solid var(--border); }
+    .prd-priority.p2 { background: rgba(255,255,255,.03); color: var(--muted); border: 1px solid var(--border); opacity:.7; }
+
+    /* ── GOALS ── */
+    .goals-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-top: 2rem; }
+    .goal-card {
+      padding: 1.8rem; border: 1px solid var(--border); background: var(--surface);
+      text-align: center; transition: border-color .25s, transform .25s;
+    }
+    .goal-card:hover { border-color: var(--gold-dim); transform: translateY(-3px); }
+    .goal-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .goal-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: .95rem; color: var(--cream); margin-bottom: .5rem;
+    }
+    .goal-metric {
+      font-family: 'Space Mono', monospace; font-size: .65rem;
+      letter-spacing: .1em; text-transform: uppercase; color: var(--gold);
+      margin-bottom: .5rem;
+    }
+    .goal-text { font-size: .82rem; color: var(--muted); line-height: 1.55; }
+
+    /* ── WORKFLOW ── */
+    .workflow-wrap { margin-top: 3rem; }
+    .workflow-phase { margin-bottom: 3rem; }
+    .phase-header {
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .phase-badge {
+      padding: .3rem .9rem; background: var(--gold); color: var(--bg);
+      font-family: 'Space Mono', monospace; font-size: .62rem;
+      letter-spacing: .12em; text-transform: uppercase;
+    }
+    .phase-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 1.1rem; color: var(--cream);
+    }
+    .workflow-steps { display: flex; flex-direction: column; gap: 1px; }
+    .workflow-step {
+      display: grid; grid-template-columns: 52px 1fr;
+      border: 1px solid var(--border); background: var(--surface);
+      transition: border-color .2s;
+    }
+    .workflow-step:hover { border-color: var(--gold-dim); }
+    .step-num {
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Space Mono', monospace; font-size: .7rem;
+      color: var(--gold); background: var(--bg);
+      border-right: 1px solid var(--border);
+    }
+    .step-body { padding: 1.2rem 1.5rem; }
+    .step-title {
+      font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: .95rem; color: var(--cream); margin-bottom: .3rem;
+    }
+    .step-desc { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+    .step-detail {
+      display: inline-block; margin-top: .5rem;
+      font-family: 'Space Mono', monospace; font-size: .6rem;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--gold-dim);
+    }
+
+    /* phase connector arrow */
+    .phase-arrow {
+      text-align: center; padding: .8rem 0;
+      color: var(--gold-dim); font-size: 1.2rem; line-height: 1;
+    }
+
+    /* ── UBER MODEL EXPLAINER ── */
+    .uber-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1px; border: 1px solid var(--border);
+      margin-top: 2rem; background: var(--border);
+    }
+    .uber-cell {
+      background: var(--surface); padding: 1.8rem;
+      position: relative;
+    }
+    .uber-cell-num {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: 3rem; color: var(--border); line-height: 1;
+      margin-bottom: .8rem; letter-spacing: -.04em;
+    }
+    .uber-cell-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--cream); margin-bottom: .5rem; }
+    .uber-cell-text { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── CLIENTS ── */
+    .clients-wrap { margin-top: 2rem; display: flex; flex-wrap: wrap; gap: 1rem; }
+    .client-chip {
+      padding: .6rem 1.2rem; border: 1px solid var(--border);
+      background: var(--surface);
+      font-family: 'DM Serif Display', serif; font-size: .95rem; color: var(--text);
+      transition: border-color .2s, color .2s;
+    }
+    .client-chip:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+    /* ── OUTCOMES ── */
+    .outcomes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 2rem; }
+    .outcome-card {
+      padding: 2rem; border: 1px solid var(--border); background: var(--surface);
+      display: flex; flex-direction: column; gap: .5rem;
+      transition: border-color .25s, transform .25s;
+    }
+    .outcome-card:hover { border-color: var(--gold-dim); transform: translateY(-3px); }
+    .outcome-big {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(2.5rem, 5vw, 4rem); color: var(--gold); line-height: 1;
+    }
+    .outcome-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem; color: var(--cream); }
+    .outcome-text { font-size: .85rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── AWARD ── */
+    .award-bar {
+      margin-top: 2.5rem; padding: 2rem;
+      border: 1px solid var(--gold-dim);
+      background: rgba(232,160,32,.05);
+      display: flex; align-items: center; gap: 2rem;
+    }
+    .award-trophy { font-size: 3rem; flex-shrink: 0; }
+    .award-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem; color: var(--gold); }
+    .award-text { font-size: .9rem; color: var(--muted); margin-top: .3rem; }
+
+    /* ── BACK / NEXT ── */
+    .case-nav {
+      max-width: 1200px; margin: 0 auto;
+      padding: 3rem clamp(1.5rem,8vw,8rem);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+
+    @media (max-width: 900px) {
+      .two-col, .two-col-wide { grid-template-columns: 1fr; gap: 2rem; }
+      .goals-grid { grid-template-columns: 1fr 1fr; }
+      .uber-grid { grid-template-columns: 1fr; }
+      .stats-bar-inner { grid-template-columns: 1fr 1fr; }
+      .stat-cell:nth-child(2) { border-right: none; }
+      .outcomes-grid { grid-template-columns: 1fr; }
+      .case-hero-inner { grid-template-columns: 1fr; }
+      .case-meta-block { text-align: left; }
+      .opp-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .goals-grid { grid-template-columns: 1fr; }
+      .stats-bar-inner { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="noise"></div>
+<div class="cursor"><div class="cursor-dot"></div></div>
+<div class="cursor"><div class="cursor-ring"></div></div>
+
+<nav>
+  <div class="nav-logo">SB</div>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="experience.html">Experience</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a href="contact.html" class="nav-cta">Let's Talk</a>
+  <div class="hamburger"><span></span><span></span><span></span></div>
+</nav>
+<div class="mobile-menu">
+  <a href="index.html">Home</a><a href="about.html">About</a>
+  <a href="experience.html">Experience</a><a href="projects.html">Projects</a>
+  <a href="contact.html">Contact</a>
+</div>
+
+<main>
+  <!-- ── HERO ── -->
+  <section class="case-hero">
+    <div class="hero-grid-bg"></div>
+    <div class="case-hero-inner">
+      <div>
+        <div class="case-breadcrumb reveal">
+          <a href="projects.html">Projects</a>
+          <span>/</span>
+          <span style="color:var(--text)">Verify</span>
+        </div>
+        <div class="case-tag-row reveal">
+          <span class="tag gold">Fintech</span>
+          <span class="tag">B2B SaaS</span>
+          <span class="tag">Location Tech</span>
+          <span class="tag gold">AI / LLM</span>
+          <span class="tag">May 2023 – Oct 2025</span>
+        </div>
+        <h1 class="case-title reveal">
+          Barikoi<br><em>Verify</em>
+        </h1>
+        <p class="case-subtitle reveal">
+          A tech-enabled Contact Point Verification platform that reduced bank loan &amp; credit card processing time from 72 hours to under 48 — serving Bangladesh's largest commercial banks at scale.
+        </p>
+      </div>
+      <div class="case-meta-block reveal">
+        <div class="case-meta-item">
+          <div class="case-meta-label">My Role</div>
+          <div class="case-meta-value">Product Development Manager</div>
+        </div>
+        <div class="case-meta-item">
+          <div class="case-meta-label">Company</div>
+          <div class="case-meta-value">Barikoi Technologies Ltd.</div>
+        </div>
+        <div class="case-meta-item">
+          <div class="case-meta-label">Industry</div>
+          <div class="case-meta-value">Banking / Fintech</div>
+        </div>
+        <div class="case-meta-item">
+          <div class="case-meta-label">Platform</div>
+          <div class="case-meta-value">Mobile App + Web Dashboard</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STATS BAR ── -->
+  <div class="stats-bar">
+    <div class="stats-bar-inner">
+      <div class="stat-cell reveal">
+        <div class="stat-big">100K+</div>
+        <div class="stat-desc">Files Processed<br>2021 – 2025</div>
+      </div>
+      <div class="stat-cell reveal">
+        <div class="stat-big">80%</div>
+        <div class="stat-desc">More Files vs.<br>Manual Capacity</div>
+      </div>
+      <div class="stat-cell reveal">
+        <div class="stat-big">53</div>
+        <div class="stat-desc">Features Shipped<br>in One Quarter</div>
+      </div>
+      <div class="stat-cell reveal">
+        <div class="stat-big">61</div>
+        <div class="stat-desc">Districts Covered<br>Across Bangladesh</div>
+      </div>
+    </div>
+  </div>
+    <!-- Award -->
+ <section class="cs-section">
+    <div class="award-bar reveal">
+      <div class="award-trophy">🏆</div>
+      <div>
+        <div class="award-title">Fintech Award 2023</div>
+        <div class="award-text">Verify was recognized with the Fintech Award 2023 — validating its position as Bangladesh's most innovative contact point verification platform and a genuine infrastructure improvement for the country's banking sector.</div>
+      </div>
+    </div>
+  </section>
+  <!-- ── BUSINESS CASE ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">Business Case</div>
+    <h2 class="cs-h2 reveal">Is going to the moon<br>easier than <em>bank verification?</em></h2>
+    <div class="two-col-wide">
+      <div>
+        <div class="cs-body reveal">
+          <p>We can travel to the Moon in 72 hours today — but in Bangladesh, completing a Contact Point Verification (CPV) for a loan or credit card application <strong>takes just as long</strong>. CPV is how banks confirm an applicant's address, employment, and identity before approving financial products. Yet this critical process was stuck in an era of paper files, physical couriers, and manual data entry.</p>
+          <p>The numbers revealed a systemic crisis. Bangladesh's credit-to-GDP ratio stood at <strong>45.22%</strong> against an ideal of 100 — meaning credit creation was being throttled not by lack of demand or supply, but by the sheer <strong>inefficiency of verification infrastructure</strong>.</p>
+          <p>Every week of delay in credit card or loan approval means money that isn't circulating, transactions that aren't happening, and businesses that aren't growing. The opportunity was clear: if we could compress verification time from 72 hours to same-day, we could meaningfully accelerate Bangladesh's financial inclusion.</p>
+        </div>
+
+        <div class="gdp-callout reveal">
+          <p>Nearly <strong>1 million hours per month</strong> are wasted collectively processing credit card and loan verifications manually across Bangladesh's banking sector — equivalent to convening multiple startup teams solely to move paperwork.</p>
+          <cite>— Barikoi Primary Research / Medium, 2022</cite>
+        </div>
+      </div>
+
+      <div>
+        <div class="problem-cards reveal">
+          <div class="problem-card">
+            <div class="problem-num">01</div>
+            <div class="problem-body">
+              <div class="problem-title">Painfully Slow TAT</div>
+              <div class="problem-text">Standard CPV took 48–72 hours at best. Manual routing of paperwork between branches, HQ, and field agents caused compounding delays at every handoff.</div>
+            </div>
+          </div>
+          <div class="problem-card">
+            <div class="problem-num">02</div>
+            <div class="problem-body">
+              <div class="problem-title">Fraud &amp; Bribery Risk</div>
+              <div class="problem-text">Unmonitored field agents with no real-time tracking created opportunities for verification fraud and bribery — exposing banks to significant NPL risk.</div>
+            </div>
+          </div>
+          <div class="problem-card">
+            <div class="problem-num">03</div>
+            <div class="problem-body">
+              <div class="problem-title">Poor Geographic Coverage</div>
+              <div class="problem-text">Verification vendors had limited geographic reach. Applications from outside major cities had drastically longer timelines — sometimes weeks.</div>
+            </div>
+          </div>
+          <div class="problem-card">
+            <div class="problem-num">04</div>
+            <div class="problem-body">
+              <div class="problem-title">No Visibility or Audit Trail</div>
+              <div class="problem-text">Banks had no real-time view of where their applications stood. No location proof, no timestamp, no photo evidence — just a manual report filed after the fact.</div>
+            </div>
+          </div>
+          <div class="problem-card">
+            <div class="problem-num">05</div>
+            <div class="problem-body">
+              <div class="problem-title">22-Minute Manual Data Entry</div>
+              <div class="problem-text">Each application required a data entry operator to spend ~22 minutes manually inputting information from physical forms — a major throughput bottleneck.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── OPPORTUNITY ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">Market Opportunity</div>
+    <h2 class="cs-h2 reveal">Why this was the<br>right <em>problem to solve.</em></h2>
+    <div class="cs-body reveal">
+      <p>Bangladesh's banking sector processes hundreds of thousands of CPV applications annually. A <strong>one-day verification cycle</strong> could double the loan sanctioning ratio, accelerate money circulation, and materially improve the country's credit-to-GDP ratio. The downstream impact of faster credit is faster business formation, more consumer spending, and higher GDP growth.</p>
+    </div>
+    <div class="opp-grid reveal">
+      <div class="opp-card">
+        <div class="opp-icon">🏦</div>
+        <div class="opp-title">Underserved Banking Infrastructure</div>
+        <div class="opp-text">No tech-native CPV solution existed in Bangladesh. Incumbents were traditional verification agencies with zero digital infrastructure.</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">📍</div>
+        <div class="opp-title">Barikoi's Unique GIS Advantage</div>
+        <div class="opp-text">As Bangladesh's leading B2B mapping company, Barikoi had proprietary address data and geographic segmentation no competitor could replicate.</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">📱</div>
+        <div class="opp-title">Mobile-First Field Workforce</div>
+        <div class="opp-text">Bangladesh's field agent population was smartphone-ready. A well-designed mobile app could unlock distributed, gig-economy style verification at scale.</div>
+      </div>
+      <div class="opp-card">
+        <div class="opp-icon">📈</div>
+        <div class="opp-title">Compounding Network Effect</div>
+        <div class="opp-text">Every new bank client added application volume, which justified more verifier agents, which improved coverage and speed — a virtuous growth cycle.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRD ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">Product Requirements Document</div>
+    <h2 class="cs-h2 reveal">What we set out<br>to <em>build.</em></h2>
+
+    <!-- Goals -->
+    <div class="cs-body reveal" style="margin-bottom:2rem">
+      <p>The PRD was organized around three product goals, each mapped to a North Star Metric that the team tracked weekly.</p>
+    </div>
+    <div class="goals-grid">
+      <div class="goal-card reveal">
+        <div class="goal-icon">⏱</div>
+        <div class="goal-title">Speed</div>
+        <div class="goal-metric">North Star: TAT &lt; 48 hrs</div>
+        <div class="goal-text">Compress verification turnaround from the industry standard of 72+ hours to under 48 hours for Dhaka, same-day for priority files.</div>
+      </div>
+      <div class="goal-card reveal">
+        <div class="goal-icon">🔒</div>
+        <div class="goal-title">Trust &amp; Compliance</div>
+        <div class="goal-metric">North Star: 0 Fraud Incidents</div>
+        <div class="goal-text">Build a fully auditable, tamper-proof trail with GPS proof-of-visit, timestamped photos, and digital signatures for every verification.</div>
+      </div>
+      <div class="goal-card reveal">
+        <div class="goal-icon">⚡</div>
+        <div class="goal-title">Throughput</div>
+        <div class="goal-metric">North Star: Files / Verifier / Day</div>
+        <div class="goal-text">Enable each verifier to process significantly more files per day than the manual model through intelligent geo-routing and task batching.</div>
+      </div>
+    </div>
+
+    <!-- Feature table -->
+    <div class="reveal" style="margin-top:3rem">
+      <p class="cs-label" style="margin-bottom:1.5rem">Feature Roadmap</p>
+      <table class="prd-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>User Story</th>
+            <th>Acceptance Criteria</th>
+            <th>Priority</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>File Creation Module</td>
+            <td>As a Team Leader, I can create a new application file from bank-provided applicant data so verification can begin immediately.</td>
+            <td>File created with all mandatory fields; applicant + guarantor + document images uploadable; auto-assigned unique file ID.</td>
+            <td><span class="prd-priority p0">P0 Core</span></td>
+          </tr>
+          <tr>
+            <td>Geo-Based Trip Assignment</td>
+            <td>As the system, I automatically assign verification trips to the nearest available verifier using location segmentation.</td>
+            <td>Assignment happens within 60 seconds of file creation; verifier receives push notification; trip visible on map.</td>
+            <td><span class="prd-priority p0">P0 Core</span></td>
+          </tr>
+          <tr>
+            <td>Verifier Mobile App</td>
+            <td>As a Verifier, I can see my assigned trips, navigate to addresses, and submit all evidence from my smartphone.</td>
+            <td>Trip list loads &lt;2s; map navigation works offline; image upload with automatic compression; LOI + signature capture.</td>
+            <td><span class="prd-priority p0">P0 Core</span></td>
+          </tr>
+          <tr>
+            <td>Real-Time Location Tracking</td>
+            <td>As a Team Leader, I can see every verifier's live GPS location to confirm they physically visited the correct contact point.</td>
+            <td>Location pings every 30s; geo-fence alert if verifier submits report outside the target address radius.</td>
+            <td><span class="prd-priority p0">P0 Core</span></td>
+          </tr>
+          <tr>
+            <td>Proof-of-Visit Photo Upload</td>
+            <td>As a Verifier, I upload timestamped, geotagged photos as irrefutable proof I completed the visit at the right location.</td>
+            <td>Photos must be taken in-app (no gallery upload); auto-tagged with GPS coordinates and timestamp; minimum 2 photos required.</td>
+            <td><span class="prd-priority p0">P0 Core</span></td>
+          </tr>
+          <tr>
+            <td>Auto-Generated Submission Sheet</td>
+            <td>As a Team Leader, I can download a bank-formatted PDF summary of the verification to submit directly to the bank.</td>
+            <td>PDF includes applicant photo, guarantor photo, verifier details, GPS stamp, visit photos, and all form data; generated in &lt;5s.</td>
+            <td><span class="prd-priority p0">P0 Core</span></td>
+          </tr>
+          <tr>
+            <td>Progress Analytics Dashboard</td>
+            <td>As a Team Leader, I can monitor overall team progress, pending files, and daily throughput on a single dashboard.</td>
+            <td>Dashboard shows files by status (pending / in-progress / completed); filterable by date, verifier, and district.</td>
+            <td><span class="prd-priority p1">P1 Growth</span></td>
+          </tr>
+          <tr>
+            <td>Role-Based Access Control</td>
+            <td>As an Admin, I can define what each user role (Admin, Team Leader, Verifier) can see and do in the system.</td>
+            <td>Three distinct permission tiers; TL cannot modify submitted verifier forms; Verifier cannot access other TL's files.</td>
+            <td><span class="prd-priority p1">P1 Growth</span></td>
+          </tr>
+          <tr>
+            <td>Route Map &amp; Trip Planning</td>
+            <td>As a Verifier, I can see all my assigned trips on a map and plan an optimal route to complete them efficiently.</td>
+            <td>Map shows all pending trip pins; clicking a pin opens navigation; estimated travel time displayed for each trip.</td>
+            <td><span class="prd-priority p1">P1 Growth</span></td>
+          </tr>
+          <tr>
+            <td>OCR Data Extraction (v2)</td>
+            <td>As a Relationship Manager, I can upload a physical form photo and have all fields auto-extracted, reducing data entry from 22 minutes to under 2.</td>
+            <td>OCR accuracy ≥95% on printed forms; NID transliteration supported; extracted data editable before submission.</td>
+            <td><span class="prd-priority p2">P2 Horizon</span></td>
+          </tr>
+          <tr>
+            <td>E-Verify (Self-Served CPV)</td>
+            <td>As a bank, I can offer applicants the ability to complete their own verification via a confidence-score-based AI system, eliminating physical field visits.</td>
+            <td>AI confidence score generated from document uploads + GPS location; score interpreted by bank against threshold; no field agent required.</td>
+            <td><span class="prd-priority p2">P2 Horizon</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── WORKFLOW ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">System Design</div>
+    <h2 class="cs-h2 reveal">How Verify<br><em>actually works.</em></h2>
+
+    <div class="cs-body reveal" style="margin-bottom:2.5rem">
+      <p>Verify operates on an <strong>Uber-model architecture</strong>: the bank creates a file, our algorithm segments the application location-wise, and the nearest available Verifier receives a trip notification on their mobile app — just like a driver accepting a ride. The entire process from file creation to bank submission is tracked, timestamped, and GPS-verified.</p>
+    </div>
+
+    <!-- Uber Model 3-col -->
+    <div class="uber-grid reveal">
+      <div class="uber-cell">
+        <div class="uber-cell-num">01</div>
+        <div class="uber-cell-title">Bank Creates Application</div>
+        <div class="uber-cell-text">Team Leader inputs applicant data, uploads photos (applicant, guarantor, documents). The system immediately geocodes the address using Barikoi's proprietary maps.</div>
+      </div>
+      <div class="uber-cell">
+        <div class="uber-cell-num">02</div>
+        <div class="uber-cell-title">Algorithm Assigns Nearest Verifier</div>
+        <div class="uber-cell-text">Barikoi's geographic segmentation engine identifies the nearest available Verifier in the correct district and sends them a push notification with trip details.</div>
+      </div>
+      <div class="uber-cell">
+        <div class="uber-cell-num">03</div>
+        <div class="uber-cell-title">Verifier Completes &amp; Submits</div>
+        <div class="uber-cell-text">Verifier navigates, conducts the visit, fills the form, uploads geotagged photos + digital signature, and submits. The system auto-generates the bank submission PDF.</div>
+      </div>
+    </div>
+
+    <!-- Detailed Workflow -->
+    <div class="workflow-wrap reveal">
+
+      <!-- Phase 1 -->
+      <div class="workflow-phase">
+        <div class="phase-header">
+          <span class="phase-badge">Phase 1</span>
+          <span class="phase-title">Team Leader — File Initiation</span>
+        </div>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <div class="step-num">1.1</div>
+            <div class="step-body">
+              <div class="step-title">File Creation</div>
+              <div class="step-desc">Team Leader logs into the web dashboard and creates a new application file using information provided by the bank — including applicant name, NID, address, employment details, and loan/card type.</div>
+              <span class="step-detail">Actor: Team Leader · Platform: Web Dashboard</span>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">1.2</div>
+            <div class="step-body">
+              <div class="step-title">Image Upload &amp; File Submission</div>
+              <div class="step-desc">Team Leader searches the file by name or ID, then uploads the applicant photo, guarantor photo, and the physical application file image. On submission, the system geocodes the address and queues the file for verifier assignment.</div>
+              <span class="step-detail">Actor: Team Leader · Trigger: Submission → Auto-geocoding → Trip Queue</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-arrow">↓</div>
+
+      <!-- Phase 2 -->
+      <div class="workflow-phase">
+        <div class="phase-header">
+          <span class="phase-badge">Phase 2</span>
+          <span class="phase-title">System — Intelligent Assignment</span>
+        </div>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <div class="step-num">2.1</div>
+            <div class="step-body">
+              <div class="step-title">Geographic Segmentation &amp; Verifier Matching</div>
+              <div class="step-desc">Barikoi's algorithm analyzes the file's location coordinates and segments it to the correct operational zone. The nearest available Verifier covering that zone is identified and sent a push notification.</div>
+              <span class="step-detail">Actor: System · Technology: Barikoi Maps API + Geo-segmentation Engine</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-arrow">↓</div>
+
+      <!-- Phase 3 -->
+      <div class="workflow-phase">
+        <div class="phase-header">
+          <span class="phase-badge">Phase 3</span>
+          <span class="phase-title">Verifier — Field Verification</span>
+        </div>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <div class="step-num">3.1</div>
+            <div class="step-body">
+              <div class="step-title">Accept Trip</div>
+              <div class="step-desc">Verifier receives the push notification on the mobile app, reviews the trip details (address, applicant info, file type), and accepts the assignment. Verifier can see all pending trips plotted on a map.</div>
+              <span class="step-detail">Actor: Verifier · Platform: iOS / Android App</span>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">3.2</div>
+            <div class="step-body">
+              <div class="step-title">Navigate &amp; Plan Route</div>
+              <div class="step-desc">Verifier uses the in-app map to navigate to the contact point. If multiple trips are accepted, the map shows all pins enabling efficient route planning to batch visits geographically.</div>
+              <span class="step-detail">Actor: Verifier · Technology: Barikoi Maps Navigation</span>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">3.3</div>
+            <div class="step-body">
+              <div class="step-title">Conduct Visit &amp; Fill Verification Form</div>
+              <div class="step-desc">At the contact point, Verifier fills in all required verification fields — address confirmation, employment status, business status, income estimate, and any discrepancies from the application.</div>
+              <span class="step-detail">Actor: Verifier · Validation: Required fields enforced; form locked until GPS within 200m of target address</span>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">3.4</div>
+            <div class="step-body">
+              <div class="step-title">Upload Proof-of-Visit Evidence</div>
+              <div class="step-desc">Verifier captures geotagged, timestamped photos of the address and contact point. Then uploads their digital signature and the Letter of Introduction (LOI) image. All evidence is immutably stored with GPS coordinates.</div>
+              <span class="step-detail">Actor: Verifier · Evidence: Photos + GPS stamp + Timestamp + Digital Signature + LOI</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-arrow">↓</div>
+
+      <!-- Phase 4 -->
+      <div class="workflow-phase">
+        <div class="phase-header">
+          <span class="phase-badge">Phase 4</span>
+          <span class="phase-title">Team Leader — Monitoring &amp; QA</span>
+        </div>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <div class="step-num">4.1</div>
+            <div class="step-body">
+              <div class="step-title">Real-Time Verifier Location Tracking</div>
+              <div class="step-desc">Team Leader monitors all active Verifiers' live GPS positions on the dashboard map. Geo-fence alerts flag any Verifier who submits a form without being physically present at the target address — eliminating remote fraud.</div>
+              <span class="step-detail">Actor: Team Leader · Feature: Live map + Geo-fence enforcement</span>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">4.2</div>
+            <div class="step-body">
+              <div class="step-title">Progress Dashboard &amp; Analytics</div>
+              <div class="step-desc">Team Leader tracks the overall pipeline — files pending, in-progress, and completed — with analytics on daily throughput, verifier performance, and district-level completion rates. Used to identify bottlenecks and rebalance workloads.</div>
+              <span class="step-detail">Actor: Team Leader · Metrics: Files / verifier / day · TAT per district · Completion rate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phase-arrow">↓</div>
+
+      <!-- Phase 5 -->
+      <div class="workflow-phase">
+        <div class="phase-header">
+          <span class="phase-badge">Phase 5</span>
+          <span class="phase-title">Team Leader — Bank Submission</span>
+        </div>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <div class="step-num">5.1</div>
+            <div class="step-body">
+              <div class="step-title">Auto-Generated PDF Download &amp; Submission</div>
+              <div class="step-desc">Once verified, the system auto-generates a bank-formatted submission PDF containing the applicant/guarantor photos, all form data, verifier details, GPS proof-of-visit, timestamped photos, and the digital LOI. Team Leader downloads, prints if required, and submits to the bank — no manual compilation needed.</div>
+              <span class="step-detail">Actor: Team Leader · Output: Bank-formatted PDF with complete audit trail</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /workflow -->
+  </section>
+
+  <!-- ── CLIENTS ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">Commercial Traction</div>
+    <h2 class="cs-h2 reveal">Banks that<br><em>trusted us.</em></h2>
+    <div class="cs-body reveal">
+      <p>Verify was adopted by some of Bangladesh's most respected financial institutions, spanning commercial banks, NBFIs, and development finance organizations.</p>
+    </div>
+    <div class="clients-wrap reveal">
+      <div class="client-chip">Brac Bank</div>
+      <div class="client-chip">The City Bank</div>
+      <div class="client-chip">LankaBangla Finance</div>
+      <div class="client-chip">Prime Bank</div>
+      <div class="client-chip">Southeast Bank</div>
+      <div class="client-chip">IPDC Finance</div>
+      <div class="client-chip">IDLC Finance</div>
+      <div class="client-chip">Jamuna Bank</div>
+      <div class="client-chip">AB Bank</div>
+      <div class="client-chip">One Bank</div>
+    </div>
+  </section>
+
+  <!-- ── OUTCOMES ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">Results &amp; Impact</div>
+    <h2 class="cs-h2 reveal">The numbers that<br><em>proved it worked.</em></h2>
+    <div class="outcomes-grid">
+      <div class="outcome-card reveal">
+        <div class="outcome-big">100K+</div>
+        <div class="outcome-title">Files Verified</div>
+        <div class="outcome-text">Over 100,000 CPV applications processed between 2021 and June 2025 — across credit cards, personal loans, business loans, and SME financing.</div>
+      </div>
+      <div class="outcome-card reveal">
+        <div class="outcome-big">300K+</div>
+        <div class="outcome-title">Field Trips Completed</div>
+        <div class="outcome-text">Over 300,000 individual field verification trips conducted by Verify agents — averaging 3 trips per file as applicants, guarantors, and employers are each verified separately.</div>
+      </div>
+      <div class="outcome-card reveal">
+        <div class="outcome-big">125K+</div>
+        <div class="outcome-title">Kilometres Travelled</div>
+        <div class="outcome-text">Verifiers travelled over 125,000 km across all 61 districts of Bangladesh — extending formal credit verification to locations previously unreachable by incumbent vendors.</div>
+      </div>
+      <div class="outcome-card reveal">
+        <div class="outcome-big">80%</div>
+        <div class="outcome-title">More Files vs. Manual</div>
+        <div class="outcome-text">The Uber model and geo-routing system enabled the Verify team to process 80% more files per day than their previous manual capacity — without adding headcount proportionally.</div>
+      </div>
+      <div class="outcome-card reveal">
+        <div class="outcome-big">3×</div>
+        <div class="outcome-title">Faster Than Competitors</div>
+        <div class="outcome-text">Verify consistently processed verifications 3x faster than conventional CPV vendors — turning a 72-hour process into a 24-48 hour one, with priority files completing same-day.</div>
+      </div>
+      <div class="outcome-card reveal">
+        <div class="outcome-big">53</div>
+        <div class="outcome-title">Features in One Quarter</div>
+        <div class="outcome-text">During the peak scaling phase, I drove the delivery of 53 product features in a single quarter — from core workflow enhancements to the analytics dashboard and RBAC system.</div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- ── LEARNINGS ── -->
+  <section class="cs-section">
+    <div class="cs-label reveal">PM Reflection</div>
+    <h2 class="cs-h2 reveal">What I learned<br>building <em>Verify.</em></h2>
+    <div class="two-col">
+      <div class="cs-body reveal">
+        <p><strong>The hardest product problems are organizational, not technical.</strong> The biggest challenge wasn't building the geo-routing algorithm — it was convincing bank operations teams to trust a mobile app over their paper-based muscle memory. Change management was as much the product as the software.</p>
+        <p><strong>Fraud prevention must be designed in, not bolted on.</strong> The geo-fence enforcement and in-app-only photo capture features weren't nice-to-haves — they were the reason banks renewed contracts. Trust is a feature.</p>
+        <p><strong>North Star Metrics keep teams honest at scale.</strong> When we were shipping 53 features in one quarter, it was easy for the team to celebrate velocity. Our NSM (files per verifier per day) kept us anchored to outcomes, not output.</p>
+      </div>
+      <div class="cs-body reveal">
+        <p><strong>Delivery density is its own moat.</strong> As more verifiers joined and more districts were covered, the cost per verification fell and quality improved. This flywheel — more agents → more coverage → more clients → more volume → more agents — became the durable competitive advantage.</p>
+        <p><strong>The PRD must survive first contact with reality.</strong> Our original roadmap had E-Verify (AI self-service) as P1. After talking to bank compliance officers, we learned no bank would accept AI-only verification for credit decisions in 2023. We reclassified it as P2 and prioritized trust-building features first. Always validate priority with the actual decision-maker.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── NAV ── -->
+  <div class="divider"></div>
+  <div class="case-nav">
+    <a href="projects.html" class="btn btn-outline">← All Projects</a>
+    <a href="contact.html" class="btn btn-primary">Discuss This Work →</a>
+  </div>
+</main>
+
+<footer>
+  <p>© 2025 Sayantan Banerjee. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="mailto:sayantan420.sb@gmail.com">Email</a>
+    <a href="projects.html">Projects</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
